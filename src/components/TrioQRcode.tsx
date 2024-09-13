@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+
 import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/theme/utils';
 

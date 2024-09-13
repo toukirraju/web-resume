@@ -1,6 +1,5 @@
-
+// @typescript-eslint/no-unused-vars
 import React from 'react';
-
 export interface ColorSchemeScriptProps extends React.ComponentPropsWithoutRef<'script'> {
   forceColorScheme?: 'light' | 'dark';
   defaultColorScheme?: 'light' | 'dark' | 'auto';

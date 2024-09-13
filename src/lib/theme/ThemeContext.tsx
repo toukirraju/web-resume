@@ -2,7 +2,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { PaletteConfig } from "./types";
-import { isHex, isRgb } from "./utils";
 
 
 type ShadeType = {

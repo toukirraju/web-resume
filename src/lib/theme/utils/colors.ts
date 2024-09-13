@@ -2,7 +2,7 @@
 import colorNamer from "color-namer";
 // @ts-ignore
 import convert from "color-convert";
-import { ShadeOption } from "@/lib/hooks/useTWVariableColor";
+import { ShadeOption } from "../types";
 
 export type Palette = {
     name: string;

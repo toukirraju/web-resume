@@ -1,13 +1,6 @@
 "use client"
 import { Certification, Education, Experiance, Header, ModeSwitch, Project, SectionHeader, Sikll, SpeedDial } from '@/components'
-import { ThemeMode } from '@/lib/theme'
 import React from 'react'
-import { BiLogoGmail } from 'react-icons/bi'
-import { BsFillTelephoneFill } from 'react-icons/bs'
-import { FaGithubSquare, FaLinkedin } from 'react-icons/fa'
-import { FaMapLocationDot, FaMedium } from 'react-icons/fa6'
-import { MdOutlineCalendarMonth } from 'react-icons/md'
-import { TbWorldWww } from 'react-icons/tb'
 
 const experianceData = [
     {
@@ -109,7 +102,7 @@ const Resume = () => {
                         <div>
                             <SectionHeader title='About Me' />
                             <p className='text-justify text-sm'>
-                                I'm a committed Frontend Developer with over one year of experience. I specialize in JavaScript, ReactJS, NextJS, Redux, Tailwind CSS, and various frontend development tools. I've collaborated with technical teams, contributing to both startup and USA-based companies over the past year.
+                                I&rsquo;m a committed Frontend Developer with over one year of experience. I specialize in JavaScript, ReactJS, NextJS, Redux, Tailwind CSS, and various frontend development tools. I&rsquo;ve collaborated with technical teams, contributing to both startup and USA-based companies over the past year.
                             </p>
                         </div>
                         {/* experience  */}
