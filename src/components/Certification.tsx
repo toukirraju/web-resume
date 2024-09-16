@@ -12,7 +12,7 @@ const Certification = () => {
                 </div>
                 <div>
                     {/* qr code or preview */}
-                    <div className='h-[50px] w-[50px]'><TrioQRcode padding='none' /></div>
+                    <div className='h-[50px] w-[50px]'><TrioQRcode padding='none' bgColor='rgba(var(--primary-100)/1)' fgColor='rgba(var(--primary-500)/1)' /></div>
                 </div>
             </div>
         </div>

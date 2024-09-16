@@ -7,6 +7,8 @@ type TrioQRcodeProps = {
     rounded?: "none" | "sm" | "md" | "lg" | "full",
     padding?: "none" | "xs" | "sm" | "md" | "lg" | "xl",
     className?: string,
+    bgColor?: string,
+    fgColor?: string,
 
 }
 
@@ -15,6 +17,8 @@ const TrioQRcode = ({
     rounded,
     padding,
     className,
+    bgColor,
+    fgColor
 }: TrioQRcodeProps) => {
 
     const roundedClasses: Record<string, string> = {
@@ -34,7 +38,6 @@ const TrioQRcode = ({
         xl: 'p-7',
     };
 
-
     return (
         <div
             className={
@@ -49,8 +52,8 @@ const TrioQRcode = ({
             <QRCodeSVG
                 value={value || 'https://example.com'}
                 // size={90} // QR code size
-                bgColor={"var(--primary-500)"}
-                fgColor={"var(--primary-100)"}
+                bgColor={bgColor ? bgColor : "#fff"} // Background color
+                fgColor={fgColor ? fgColor : "#000"} // Foreground color
                 level={"L"} // Error correction level
                 className='h-full w-full rounded-md'
             />

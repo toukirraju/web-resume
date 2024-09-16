@@ -1,5 +1,6 @@
-"use client"
+
 import { Certification, Education, Experiance, Header, ModeSwitch, Project, SectionHeader, Sikll, SpeedDial } from '@/components'
+import { cookies } from 'next/headers'
 import React from 'react'
 
 const experianceData = [
@@ -84,9 +85,11 @@ const projectData = [
 ]
 
 const Resume = () => {
+    const cookieStore = cookies()
+    const trioTheme = JSON.parse(cookieStore.get('trio-theme')?.value || '{}')
     return (
         <div>
-            <ModeSwitch />
+            <ModeSwitch themeProps={trioTheme} />
             <SpeedDial />
             {/* container */}
             <div className='max-w-[900px] mx-auto h-full p-4 md:p-10'>

@@ -1,5 +1,6 @@
 import AppearanceSettings from "./AppearanceSettings";
 import { ColorSchemeScript } from "./ColorSchemeScript";
+import { ColorSchemeScriptJs } from "./ColorSchemeScriptJs";
 import { Loader } from "./Loader";
 import { PaletteGenerator, ThemePalette } from "./palettes";
 import ThemeMode from "./ThemeMode";
@@ -14,5 +15,6 @@ export {
     ThemePreset,
     ThemeMode,
     AppearanceSettings,
-    ColorSchemeScript
+    ColorSchemeScriptJs,
+    // ColorSchemeScript
 }

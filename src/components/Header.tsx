@@ -60,7 +60,7 @@ const Header = ({
             <div className=''>
                 {/* image */}
                 <div className='h-[calc(15vw+40px)] overflow-hidden p-1 w-[calc(15vw+40px)] max-h-[100px] max-w-[100px] mt-[calc(2rem)] md:mt-0 rounded-full flex justify-center items-center bg-gray-600'>
-                    <TrioQRcode padding='md' rounded='full' />
+                    <TrioQRcode padding='md' rounded='full' bgColor='rgba(var(--primary-500)/1)' fgColor='rgba(var(--primary-100)/1)' />
                 </div>
             </div>
         </div>

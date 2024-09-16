@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/Providers/Providers";
-import { ColorSchemeScript } from "@/lib/theme/components";
-import { applyThemeInDOM } from "@/lib/theme/utils/applyThemeInDOM";
-import { ColorSchemeScriptJs } from './../lib/theme/components/ColorSchemeScriptJs';
-import { ThemeType } from "@/lib/theme/ThemeContext";
 import { defaultThemeRgb } from "@/lib/theme/data";
+import { ColorSchemeScriptJs } from "@/lib/theme";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

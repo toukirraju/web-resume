@@ -9,9 +9,9 @@ type ProvidersProps = {
 const Providers = ({ children }: ProvidersProps) => {
     return (
         <ThemeProvider
-            themeLoader={
-                <Loader />
-            }
+            // themeLoader={
+            //     <Loader />
+            // }
 
             config={{
                 colorType: 'rgb',
