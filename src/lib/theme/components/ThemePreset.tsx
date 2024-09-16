@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 import { ThemeType, useTheme } from '../ThemeContext';
 
-import { cn, getColorPalette, hexToRgb } from '../utils';
+import { cn, getColorPalette, hexToRgb, setCookie } from '../utils';
 
 
 
@@ -36,8 +36,13 @@ const ThemePreset: React.FC = () => {
                 shades: updatedShades
             };
 
-            // Update local storage
-            localStorage.setItem("trio-theme", JSON.stringify(updatedTheme));
+            if (config?.storage === "cookie") {
+                // Store the theme in cookies
+                setCookie("trio-theme", JSON.stringify(updatedTheme), 365);
+            } else {
+                // Default to localStorage
+                localStorage.setItem("trio-theme", JSON.stringify(updatedTheme));
+            }
 
             // Check for existing style element
             let styleElement = document.getElementById('trio-theme-style');

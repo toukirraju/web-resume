@@ -1,4 +1,3 @@
-// @typescript-eslint/no-unused-vars
 import React from 'react';
 export interface ColorSchemeScriptProps extends React.ComponentPropsWithoutRef<'script'> {
   forceColorScheme?: 'light' | 'dark';
@@ -6,8 +5,8 @@ export interface ColorSchemeScriptProps extends React.ComponentPropsWithoutRef<'
   localStorageKey?: string;
   themeLocalStorageKey?: string;
   colorType?: 'rgb' | 'hex';
+  storage?: 'cookie' | 'localStorage';
 }
-
 
 const getScript = ({
   defaultColorScheme,
@@ -15,10 +14,48 @@ const getScript = ({
   forceColorScheme,
   themeLocalStorageKey,
   colorType,
-}: Pick<ColorSchemeScriptProps, 'defaultColorScheme' | 'localStorageKey' | 'forceColorScheme' | 'themeLocalStorageKey' | 'colorType'>) => `
+  storage = "localStorage", // default to localStorage
+}: Pick<ColorSchemeScriptProps, 'defaultColorScheme' | 'localStorageKey' | 'forceColorScheme' | 'themeLocalStorageKey' | 'colorType' | 'storage'>) => `
+// Utility functions for cookies
+function setCookie(name, value, days) {
+  var expires = "";
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
 try {
-  var _colorScheme = window.localStorage.getItem("${localStorageKey}");
-  var colorScheme = _colorScheme === "light" || _colorScheme === "dark" || _colorScheme === "auto" || _colorScheme === "system" ? _colorScheme : "${defaultColorScheme}";
+  var storageType = "${storage}";
+  var colorScheme = null;
+  var themeData = null;
+
+if (storageType === "cookie") {
+    // Get color scheme and theme from cookies
+    colorScheme = getCookie("${localStorageKey}") || "${defaultColorScheme}";
+    themeData = getCookie("${themeLocalStorageKey}") ? JSON.parse(decodeURIComponent(getCookie("${themeLocalStorageKey}"))) : null;
+  } else {
+    // Default to localStorage
+    colorScheme = window.localStorage.getItem("${localStorageKey}") || "${defaultColorScheme}";
+    themeData = window.localStorage.getItem("${themeLocalStorageKey}") ? JSON.parse(window.localStorage.getItem("${themeLocalStorageKey}")) : null;
+  }
+
+  // Ensure valid color scheme
+  colorScheme = colorScheme === "light" || colorScheme === "dark" || colorScheme === "auto" || colorScheme === "system" ? colorScheme : "${defaultColorScheme}";
+
   var computedColorScheme = (colorScheme !== "auto" && colorScheme !== "system") ? colorScheme : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   document.documentElement.setAttribute("data-mode", ${forceColorScheme ? `"${forceColorScheme}"` : 'computedColorScheme'});
 
@@ -117,11 +154,8 @@ try {
     ]
   };
 
-  // Insert theme colors
-  var themeData = JSON.parse(window.localStorage.getItem("${themeLocalStorageKey}") || "null");
-
-   // Select the appropriate default theme based on the colorType
-      var defaultTheme = ${colorType} === 'rgb' ? defaultThemeRgb : defaultThemeHex;
+  // Select the appropriate default theme based on the colorType
+  var defaultTheme = ${colorType} === 'rgb' ? defaultThemeRgb : defaultThemeHex;
 
   // If themeData doesn't exist, use the default theme
   themeData = themeData && themeData.shades ? themeData : defaultTheme;
@@ -144,22 +178,26 @@ try {
   cssRules += '}';
   style.textContent = cssRules;
   
-  // Store default theme in localStorage if not already stored
-  if (!window.localStorage.getItem("${themeLocalStorageKey}")) {
+   // Store theme back into localStorage or cookies
+  if (storageType === "cookie") {
+    setCookie("${themeLocalStorageKey}", encodeURIComponent(JSON.stringify(defaultTheme)), 365);
+  } else {
     window.localStorage.setItem("${themeLocalStorageKey}", JSON.stringify(defaultTheme));
   }
 } catch (e) {
   console.error("Error setting color scheme:", e);
 }
 `;
+
 export function ColorSchemeScript({
   defaultColorScheme = 'light',
   localStorageKey = 'trio-color-scheme-value',
   themeLocalStorageKey = 'trio-theme',
   forceColorScheme,
   colorType = "hex",
+  storage = "localStorage", // new prop for storage type
   ...others
-}: ColorSchemeScriptProps) {
+}: ColorSchemeScriptProps & { storage?: 'cookie' | 'localStorage' }) {
   const _defaultColorScheme = ['light', 'dark', 'auto'].includes(defaultColorScheme)
     ? defaultColorScheme
     : 'light';
@@ -173,6 +211,8 @@ export function ColorSchemeScript({
           localStorageKey,
           forceColorScheme,
           themeLocalStorageKey,
+          colorType,
+          storage,
         }),
       }}
     />

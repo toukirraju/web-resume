@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect } from 'react'
 import { useTheme } from '../../ThemeContext';
-import { isObjectEqual } from '../../utils';
+import { isObjectEqual, setCookie } from '../../utils';
 import { PaletteGenerator } from '..';
 import { PaletteSkeleton } from '../skeletons';
 
@@ -68,7 +68,14 @@ const ThemePalette = () => {
 
     const handleSaveTheme = () => {
         console.log('Saving theme', updatedTheme);
-        localStorage.setItem("trio-theme", JSON.stringify(updatedTheme));
+        // localStorage.setItem("trio-theme", JSON.stringify(updatedTheme));
+        if (config?.storage === "cookie") {
+            // Store the theme in cookies with an expiration of 365 days
+            setCookie("trio-theme", JSON.stringify(updatedTheme), 365);
+        } else {
+            // Default to localStorage
+            localStorage.setItem("trio-theme", JSON.stringify(updatedTheme));
+        }
         setTheme(updatedTheme);
         setIsPaletteChanged(false);
     };

@@ -1,8 +1,24 @@
-
 "use client";
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { PaletteConfig } from "./types";
+import { defaultThemeHex, defaultThemeRgb } from "./data";
+import { applyThemeInDOM } from "./utils/applyThemeInDOM";
 
+
+// Utility functions for cookies
+const setCookie = (name: string, value: string, days: number) => {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+  // Dispatch a custom event when a cookie is set
+  window.dispatchEvent(new CustomEvent('cookieChange', { detail: { key: name, value } }));
+};
+
+const getCookie = (name: string) => {
+  return document.cookie.split("; ").reduce((r, v) => {
+    const parts = v.split("=");
+    return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+  }, "");
+};
 
 type ShadeType = {
   name: string;
@@ -43,102 +59,6 @@ type ThemeProviderProps = {
 };
 
 
-const defaultThemeHex: DefaultThemeType = {
-  name: "default",
-  mode: "light",
-  shades: [
-    {
-      name: "primary",
-      color: "#0fffff",
-      shade: {
-        "25": "#F7FFFF",
-        "50": "#F2FFFF",
-        "100": "#E8FFFF",
-        "200": "#C4FFFF",
-        "300": "#9EFFFF",
-        "400": "#57FFFF",
-        "500": "#0fffff",
-        "600": "#0BDBE6",
-        "700": "#08A7BF",
-        "800": "#067C99",
-        "900": "#035373",
-        "950": "#01314A",
-        "light": "#F7FFFF",
-        "dark": "#01314A"
-      }
-    },
-    {
-      name: "secondary",
-      color: "#0f6fff",
-      shade: {
-        "25": "#f7fffe",
-        "50": "#f2fffe",
-        "100": "#e8f7ff",
-        "200": "#c4e4ff",
-        "300": "#9eb5ff",
-        "400": "#578cff",
-        "500": "#0f6fff",
-        "600": "#0b2ce6",
-        "700": "#0839bf",
-        "800": "#063599",
-        "900": "#035373",
-        "950": "#011b4a",
-        "light": "#f7fdff",
-        "dark": "#010c4a"
-      },
-    },
-  ]
-}
-
-
-const defaultThemeRgb: DefaultThemeType = {
-  name: "default",
-  mode: "light",
-  shades: [
-    {
-      name: "primary",
-      color: "15 255 255",
-      shade: {
-        "25": "247 255 255",
-        "50": "242 255 255",
-        "100": "232 255 255",
-        "200": "196 255 255",
-        "300": "158 255 255",
-        "400": "87 255 255",
-        "500": "15 255 255",
-        "600": "11 219 230",
-        "700": "8 167 191",
-        "800": "6 124 153",
-        "900": "3 83 115",
-        "950": "1 49 74",
-        "light": "247 255 255",
-        "dark": "1 49 74"
-      }
-    },
-    {
-      name: "secondary",
-      color: "15 111 255",
-      shade: {
-        "25": "247 253 255",
-        "50": "242 251 255",
-        "100": "232 247 255",
-        "200": "196 233 255",
-        "300": "158 215 255",
-        "400": "87 168 255",
-        "500": "15 111 255",
-        "600": "11 95 230",
-        "700": "8 72 191",
-        "800": "6 53 153",
-        "900": "3 35 115",
-        "950": "1 20 74",
-        "light": "247 253 255",
-        "dark": "1 20 74"
-      }
-    },
-  ]
-};
-
-
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
   themeLoader,
@@ -146,93 +66,112 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   defaultTheme
 }) => {
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState<ThemeType>(() => ({
+  const [theme, setTheme] = useState<ThemeType>(() => ({} as ThemeType));
 
-  } as ThemeType));
-
-
-  // initialized theme 
-  useEffect(() => {
-    const initTheme = async () => {
-      // get local storage theme 
+  // Utility function to get theme from either localStorage or cookie
+  const getStoredTheme = () => {
+    if (config.storage === "cookie") {
+      const cookieTheme = getCookie("trio-theme");
+      return cookieTheme ? JSON.parse(cookieTheme) : null;
+    } else {
       const localTheme = localStorage.getItem("trio-theme");
+      return localTheme ? JSON.parse(localTheme) : null;
+    }
+  };
+
+
+
+  // Utility function to store theme in either localStorage or cookie
+  const storeTheme = (theme: ThemeType) => {
+    if (config.storage === "cookie") {
+      setCookie("trio-theme", JSON.stringify(theme), 365); // Store for 1 year
+    } else {
+      localStorage.setItem("trio-theme", JSON.stringify(theme));
+    }
+    // Dispatch a custom event when the theme is stored
+    window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme } }));
+  };
+
+  useEffect(() => {
+
+    const initTheme = async () => {
+      // const storedTheme = getStoredTheme();
+      const localTheme = getStoredTheme();
 
       if (defaultTheme) {
         if (defaultTheme.name === "default") {
-          throw new Error("Please change default theme name from 'default' to something else because 'default' is a reserved keyword. e.g. name: 'my-default-theme'");
+          throw new Error(
+            "Please change default theme name from 'default' to something else because 'default' is a reserved keyword. e.g. name: 'my-default-theme'"
+          );
         }
         if (localTheme) {
-          const themeObj = JSON.parse(localTheme) as ThemeType;
+          const themeObj = localTheme as ThemeType;
 
           if (defaultTheme.name !== "default" && themeObj?.name !== defaultTheme.name) {
             // if default theme name is not 'default' and local storage theme name is not same as default theme name then remove local storage and set default theme
-            localStorage.setItem("trio-theme", JSON.stringify(defaultTheme));
+            storeTheme(defaultTheme);
             setTheme(defaultTheme);
           } else {
             //check if color type is rgb or hex if config color type is rgb but local storage is hex then remove local storage and set default theme 
             //also if config color type is same as local storage then set local storage theme
             if (config.colorType === "rgb" && themeObj.shades[0].color.includes("#")) {
               setTheme(defaultThemeRgb);
-              localStorage.setItem("trio-theme", JSON.stringify(defaultThemeRgb));
+              storeTheme(defaultThemeRgb);
             } else if (config.colorType === "hex" && !themeObj.shades[0].color.includes("#")) {
               setTheme(defaultThemeHex);
-              localStorage.setItem("trio-theme", JSON.stringify(defaultThemeHex));
+              storeTheme(defaultThemeHex);
             } else {
               setTheme(themeObj);
-              localStorage.setItem("trio-theme", JSON.stringify(themeObj));
-
-              // apply dark mode
+              storeTheme(themeObj);
               applyDarkMode(themeObj.mode);
             }
           }
 
-
         } else {
           console.log("local theme not found");
-          // const initialTheme = defaultTheme || (config.colorType === "rgb" ? defaultThemeRgb : defaultThemeHex);
-          // setTheme(initialTheme);
-          // localStorage.setItem("trio-theme", JSON.stringify(initialTheme));
         }
       } else {
-        // if default theme is not provided then set local storage theme 
         if (localTheme) {
-          const themeObj = JSON.parse(localTheme) as ThemeType;
-
-          //check if color type is rgb or hex if config color type is rgb but local storage is hex then remove local storage and set default theme 
-          //also if config color type is same as local storage then set local storage theme
+          const themeObj = localTheme as ThemeType;
           if (config.colorType === "rgb" && themeObj.shades[0].color.includes("#")) {
             setTheme(defaultThemeRgb);
-            localStorage.setItem("trio-theme", JSON.stringify(defaultThemeRgb));
+            storeTheme(defaultThemeRgb);
           } else if (config.colorType === "hex" && !themeObj.shades[0].color.includes("#")) {
             setTheme(defaultThemeHex);
-            localStorage.setItem("trio-theme", JSON.stringify(defaultThemeHex));
+            storeTheme(defaultThemeHex);
           } else {
             setTheme(themeObj);
-
-            // apply dark mode
+            storeTheme(themeObj);
             applyDarkMode(themeObj.mode);
           }
-
         } else {
           const initialTheme = defaultTheme || (config.colorType === "rgb" ? defaultThemeRgb : defaultThemeHex);
           setTheme(initialTheme);
-          localStorage.setItem("trio-theme", JSON.stringify(initialTheme));
+          storeTheme(initialTheme);
         }
+
       }
+
 
       setLoading(false);
     };
 
     initTheme();
-  }, [
-    theme.name,
-    theme.mode,
-    config.colorType,
-    defaultTheme
-  ]);
+
+    // Add event listener for theme changes
+    const handleThemeChange = (event: CustomEvent) => {
+      applyThemeInDOM(event.detail.theme);
+    };
+    window.addEventListener('themeChange', handleThemeChange as EventListener);
+
+    return () => {
+      window.removeEventListener('themeChange', handleThemeChange as EventListener);
+    };
+  }, [config, defaultTheme]);
 
 
-  // apply dark mode
+
+
   const applyDarkMode = (mode: string) => {
     if (mode === "dark") {
       // set data-mode attribute for dark mode
@@ -249,45 +188,43 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         document.documentElement.setAttribute("data-mode", "light");
       }
     }
+    setCookie("theme-mode", mode, 365);
     localStorage.setItem("theme-mode", mode);
+    // if (config.storage === "cookie") {
+    //   console.log("set moed")
+    //   setCookie("theme-mode", mode, 365);
+    // } else {
+    //   localStorage.setItem("theme-mode", mode);
+    // }
   };
 
   const changeTheme = (theme: Partial<ThemeType>) => {
-    // change theme color variables
-    setTheme(prev => {
+    setTheme((prev) => {
       const updatedTheme = { ...prev, ...theme };
-      localStorage.setItem("trio-theme", JSON.stringify(updatedTheme));
+      storeTheme(updatedTheme);
       return updatedTheme;
     });
-  }
-
+  };
 
   const toggleDarkMode = (mode: string) => {
-    // toggle dark,light,system mode and update theme mode and theme list and local storage accordingly
     applyDarkMode(mode);
-    setTheme(prev => {
+    setTheme((prev) => {
       const updatedTheme = { ...prev, mode };
-      localStorage.setItem("trio-theme", JSON.stringify(updatedTheme));
+      storeTheme(updatedTheme);
       return updatedTheme;
     });
+  };
 
-
-  }
-
-
-  const contextValue = useMemo(() => ({
-    config,
-    theme,
-    setTheme,
-    toggleDarkMode,
-    changeTheme,
-  }), [
-    config,
-    theme,
-    setTheme,
-    toggleDarkMode,
-    changeTheme,
-  ]);
+  const contextValue = useMemo(
+    () => ({
+      config,
+      theme,
+      setTheme,
+      toggleDarkMode,
+      changeTheme,
+    }),
+    [config, theme]
+  );
 
   return (
     <ThemeContext.Provider value={contextValue}>

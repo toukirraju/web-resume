@@ -3,6 +3,10 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/Providers/Providers";
 import { ColorSchemeScript } from "@/lib/theme/components";
+import { applyThemeInDOM } from "@/lib/theme/utils/applyThemeInDOM";
+import { ColorSchemeScriptJs } from './../lib/theme/components/ColorSchemeScriptJs';
+import { ThemeType } from "@/lib/theme/ThemeContext";
+import { defaultThemeRgb } from "@/lib/theme/data";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,11 +30,67 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+
       >
-        <ColorSchemeScript localStorageKey="theme-mode" themeLocalStorageKey="trio-theme" colorType="hex" />
+        <ColorSchemeScriptJs
+          // storage="localStorage"
+          storage="cookie"
+          themeModeKey="theme-mode"
+          themeLocalStorageKey="trio-theme"
+          colorType="rgb"
+          defaultTheme={defaultThemeRgb as any}
+
+        // defaultTheme={{
+        //   "name": "default-theme",
+        //   "mode": "system",
+        //   "shades": [
+        //     {
+        //       "name": "primary",
+        //       "color": "#673AB7",
+        //       "shade": {
+        //         "25": "#FBF7FC",
+        //         "50": "#FAF5FC",
+        //         "100": "#F1E6F7",
+        //         "200": "#DDC5ED",
+        //         "300": "#C7A6E3",
+        //         "400": "#986ACC",
+        //         "500": "#673AB7",
+        //         "600": "#5930A6",
+        //         "700": "#42218A",
+        //         "800": "#2F156E",
+        //         "900": "#1E0B52",
+        //         "950": "#100536",
+        //         "light": "#FBF7FC",
+        //         "dark": "#040112"
+        //       }
+        //     },
+        //     {
+        //       "name": "secondary",
+        //       "color": "#8BC34A",
+        //       "shade": {
+        //         "25": "#FBFCF7",
+        //         "50": "#FBFCF5",
+        //         "100": "#F6FAEB",
+        //         "200": "#E5F0CC",
+        //         "300": "#D2E6AC",
+        //         "400": "#AFD479",
+        //         "500": "#8BC34A",
+        //         "600": "#74AD3B",
+        //         "700": "#5A9129",
+        //         "800": "#42751B",
+        //         "900": "#2A570F",
+        //         "950": "#183806",
+        //         "light": "#FBFCF7",
+        //         "dark": "#071401"
+        //       }
+        //     }
+        //   ]
+        // } as any}
+        />
+
         <Providers>
           {children}
         </Providers>

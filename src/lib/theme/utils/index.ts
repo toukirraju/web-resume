@@ -3,10 +3,12 @@ import getColorPalette, { Palette, getColorName, getTextColor, hexToHSL, hexToRg
 import clsx from "./clsx";
 import { twMerge } from "./tailwind-merge";
 import { cn } from "./cn";
+import { getCookie, removeCookie, setCookie } from "./storageUtils";
 
 
 export type { Palette };
+
 export {
     cn, twMerge, clsx, isObjectEqual, getColorPalette, getColorName, getTextColor, hexToHSL, hexToRgba, hslToHex, rgbToHex, hexToRgb, isHex,
-    isRgb, isValidHexColorCode, sixDigitsColorHex
+    isRgb, isValidHexColorCode, sixDigitsColorHex, setCookie, getCookie, removeCookie
 };
