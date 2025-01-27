@@ -35,7 +35,7 @@ const Experiance = ({
 }: ExperianceProps) => {
 
     return (
-        <div>
+        <div className='col-span-1'>
             <h3 className='text-lg font-bold text-primary-400 dark:text-primary-500'>{title}</h3>
             <p className='text-md font-bold dark:text-slate-500'>{position}</p>
             <div className='flex justify-between items-center md:gap-2 dark:text-slate-600'>

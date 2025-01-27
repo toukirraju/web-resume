@@ -1,5 +1,6 @@
 import React from 'react'
 import TrioQRcode from './TrioQRcode'
+import Link from 'next/link'
 
 const project = {
     title: 'HomiFy – Home rental platform',
@@ -10,7 +11,8 @@ const project = {
         'Developed backend and other functionalities. like - api creation & integration, auth security ensure etc.',
         'Developed and Integrated socket.io for realtime data transmission.',
         'Integrate Google map.'
-    ]
+    ],
+    url: 'https://h0mify.com'
 }
 
 type ProjectProps = {
@@ -18,16 +20,18 @@ type ProjectProps = {
     technologies?: string
     description?: string
     responsivities?: string[]
+    url?: string
 }
 
 const Project = ({
     title = project.title,
     technologies = project.technologies,
     description = project.description,
-    responsivities = project.responsivities
+    responsivities = project.responsivities,
+    url = project.url
 }: ProjectProps) => {
     return (
-        <div>
+        <div className='col-span-1'>
             <div className='flex items-center'>
                 <div>
                     <h3 className='text-md font-bold text-primary-400 dark:text-primary-500'>{title}</h3>
@@ -36,7 +40,17 @@ const Project = ({
                 </div>
                 <div>
                     {/* qr code or preview */}
-                    <div className='h-[50px] w-[50px]'><TrioQRcode padding='none' bgColor='rgba(var(--primary-100)/1)' fgColor='rgba(var(--primary-500)/1)' /></div>
+                    <div className='relative h-[50px] w-[50px] cursor-pointer group'>
+                        <Link
+                            href={url}
+                            target='_blank'
+                        >
+                            <TrioQRcode value={url} padding='none' bgColor='rgba(var(--primary-100)/1)' fgColor='rgba(var(--primary-500)/1)' />
+                            <div className='absolute bottom-full mb-2 hidden w-max px-2 py-1 text-xs text-white bg-black rounded group-hover:block'>
+                                {url}
+                            </div>
+                        </Link>
+                    </div>
                 </div>
             </div>
             <div className='text-justify text-sm space-y-1 my-1'>

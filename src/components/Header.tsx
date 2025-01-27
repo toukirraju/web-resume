@@ -5,20 +5,33 @@ import { FaGithubSquare } from 'react-icons/fa'
 import { FaLinkedin, FaMapLocationDot, FaMedium } from 'react-icons/fa6'
 import { TbWorldWww } from 'react-icons/tb'
 import TrioQRcode from './TrioQRcode'
+import Link from 'next/link'
 
 const headerData = {
     name: 'Taukir Ahmad Raju',
-    designation: 'Jr. Frontend Developer',
+    designation: 'Software Engineer',
     contact: [
         { icon: <BsFillTelephoneFill />, text: '01952667055' },
         { icon: <BiLogoGmail />, text: 'toukirraju@gmail.com' },
         { icon: <FaMapLocationDot />, text: 'Gazipur, Dhaka, Bangladesh' }
     ],
     social: [
-        { icon: <FaGithubSquare /> },
-        { icon: <FaLinkedin /> },
-        { icon: <TbWorldWww /> },
-        { icon: <FaMedium /> }
+        {
+            icon: <FaGithubSquare />,
+            url: 'https://github.com/toukirraju'
+        },
+        {
+            icon: <FaLinkedin />,
+            url: 'https://www.linkedin.com/in/toukir-raju'
+        },
+        {
+            icon: <TbWorldWww />,
+            'url': 'https://toukirraju.github.io/'
+        },
+        {
+            icon: <FaMedium />,
+            url: 'https://medium.com/@toukirraju/'
+        }
     ]
 
 }
@@ -26,7 +39,10 @@ type HeaderProps = {
     name?: string
     designation?: string
     contact?: { icon: JSX.Element, text: string }[]
-    social?: { icon: JSX.Element }[]
+    social?: {
+        icon: JSX.Element;
+        url: string
+    }[]
 }
 const Header = ({
     name = headerData.name,
@@ -52,7 +68,15 @@ const Header = ({
                     {/* social  */}
                     <div className="flex items-center gap-2">
                         {
-                            social.map((item, index) => <div key={index}>{item.icon}</div>)
+                            social.map((item, index) => <div key={index} className='hover:scale-125 transform transition-all duration-300'>
+                                <Link
+                                    href={item.url}
+                                    target='_blank'
+                                    className='hover:text-primary  transition-all duration-300'
+                                >
+                                    {item.icon}
+                                </Link>
+                            </div>)
                         }
                     </div>
                 </div>
@@ -60,7 +84,7 @@ const Header = ({
             <div className=''>
                 {/* image */}
                 <div className='h-[calc(15vw+40px)] overflow-hidden p-1 w-[calc(15vw+40px)] max-h-[100px] max-w-[100px] mt-[calc(2rem)] md:mt-0 rounded-full flex justify-center items-center bg-gray-600'>
-                    <TrioQRcode padding='md' rounded='full' bgColor='rgba(var(--primary-500)/1)' fgColor='rgba(var(--primary-100)/1)' />
+                    <TrioQRcode value='https://www.linkedin.com/in/toukir-raju' padding='md' rounded='full' bgColor='rgba(var(--primary-500)/1)' fgColor='rgba(var(--primary-100)/1)' />
                 </div>
             </div>
         </div>

@@ -3,8 +3,8 @@ import TrioQRcode from './TrioQRcode'
 
 const Certification = () => {
     return (
-        <div className='text-sm dark:text-slate-600'>
-            <div className='flex items-center'>
+        <div className='text-sm dark:text-slate-600 w-full  '>
+            <div className='flex items-center justify-between py-2'>
                 <div>
                     <h3 className='text-md font-bold text-primary-400 dark:text-primary-500'>Redux: Think in a Redux way</h3>
                     {/* technologies */}

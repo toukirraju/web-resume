@@ -37,13 +37,13 @@ const skillData = [
     {
         title: 'Frontend',
         skills: [
-            'React, NextJs,React Native, Expo, Redux, Web socket, Soket.io, MUI, Styled-Component, Tailwindcss, Google Map, Storybook etc.',
+            'React, NextJs, React Native, Expo, Redux, Web socket, Soket.io, MUI, Styled-Component, Tailwindcss, Google Map, Storybook etc.',
         ]
     },
     {
         title: 'Backend',
         skills: [
-            'JavaScript, TypeScript, Node.js, Express.js, REST API etc.'
+            'JavaScript, TypeScript, Node.js, Nestjs, TypeOrm, Prisma, Express.js, REST API etc.'
         ]
     },
     {
@@ -72,6 +72,43 @@ const educationData = [
 
 const projectData = [
     {
+        title: 'Property365x',
+        technologies: 'NextJs, Redux, Tailwindcss, Google Map, Prisma, Postgress etc.',
+        description: 'Property365x is a white label real estate platform that allows real estate professionals to manage their inventory and transactions.',
+        responsivities: [
+            'Designed & Developed various research based ideas and projects with NextJs, redux, tailwindcss and many more.',
+            'Developed backend and other functionalities. like - api creation & integration, auth security ensure etc.',
+            'Developed and Integrated socket.io for realtime data transmission.',
+            'Integrate Google map.'
+        ],
+        url: 'https://www.property365x.net'
+    },
+    {
+        title: 'E-commerce platform',
+        technologies: 'Nextjs, Redux, Tailwindcss,NestJs, Postgress, TypeOrm etc.',
+        description: 'E-commerce platform is a platform where users can buy and sell their products. It has a user-friendly interface and a lot of features.',
+        responsivities: [
+            'Designed & Developed various research based ideas and projects with NextJs, redux, tailwindcss and many more.',
+            'Developed backend and other functionalities. like - api creation & integration, auth security ensure etc.',
+            'Developed and Integrated socket.io for realtime data transmission.',
+            'Integrate Google map.'
+        ],
+        url: 'https://sv-ecommerce.vercel.app'
+    },
+
+    {
+        title: '3D T-shirt Configurator',
+        technologies: 'React, ThreeJs, Redux, Tailwindcss, Motion etc.',
+        description: '3D T-shirt Configurator is a platform where users can customize their t-shirt with 3D view. It has a user-friendly interface and a lot of features.',
+        responsivities: [
+            'Designed & Developed various research based ideas and projects with ReactJs, redux, tailwindcss and many more.',
+            'Customized 3D view for t-shirt.',
+            'Dynamic color change for t-shirt.',
+            'Upload custom design for t-shirt.',
+        ],
+        url: 'https://tshirt-configurator-indol.vercel.app'
+    },
+    {
         title: 'HomiFy – Home rental platform',
         technologies: 'React, NextJs, Redux, Tailwindcss, Google Map, Storybook etc.',
         description: 'Homify is a home rental platform where users can rent their home for a short period of time. It has a user-friendly interface and a lot of features.',
@@ -80,8 +117,10 @@ const projectData = [
             'Developed backend and other functionalities. like - api creation & integration, auth security ensure etc.',
             'Developed and Integrated socket.io for realtime data transmission.',
             'Integrate Google map.'
-        ]
-    }
+        ],
+        url: 'https://h0mify.com'
+
+    },
 ]
 
 const Resume = () => {
@@ -92,33 +131,35 @@ const Resume = () => {
             <ModeSwitch themeProps={trioTheme} />
             <SpeedDial />
             {/* container */}
-            <div className='max-w-[900px] mx-auto h-full p-4 md:p-10'>
+            <div className='max-w-[900px] mx-auto h-full p-4 md:p-10 '>
 
                 {/* header section  */}
                 <Header />
 
                 {/* body section  */}
-                <div className='flex justify-between flex-col md:flex-row gap-5 mt-2'>
+                <div className='mt-2'>
                     {/* left side  */}
-                    <div className='w-full md:w-3/5 space-y-2'>
+                    <div className='w-full space-y-2'>
                         {/* about  */}
                         <div>
                             <SectionHeader title='About Me' />
                             <p className='text-justify text-sm'>
-                                I&rsquo;m a committed Frontend Developer with over one year of experience. I specialize in JavaScript, ReactJS, NextJS, Redux, Tailwind CSS, and various frontend development tools. I&rsquo;ve collaborated with technical teams, contributing to both startup and USA-based companies over the past year.
+                                I&rsquo;m a committed Web Developer with over one year of professional experience. I specialize in JavaScript, Typescript, ReactJS, NextJS, Redux, Tailwind CSS, Nodejs, NestJs and various  development tools. I&rsquo;ve collaborated with technical teams, contributing to both startup and USA-based companies over the past year.
                             </p>
                         </div>
                         {/* experience  */}
                         <div>
                             <SectionHeader title='Experience' />
                             {/* exp  */}
-                            {
-                                experianceData.map((exp, index) => <Experiance key={index} {...exp} />)
-                            }
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 space-x-2'>
+                                {
+                                    experianceData.map((exp, index) => <Experiance key={index} {...exp} />)
+                                }
+                            </div>
                         </div>
                     </div>
                     {/* right side  */}
-                    <div className='w-full md:w-3/5 space-y-2'>
+                    <div className='w-full space-y-4'>
                         {/* skills  */}
                         <div>
                             <SectionHeader title='Skills' />
@@ -126,6 +167,17 @@ const Resume = () => {
                                 skillData.map((skill, index) => <Sikll key={index} {...skill} />)
                             }
                         </div>
+
+                        {/* projects */}
+                        <div>
+                            <SectionHeader title='Projects' />
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-6 space-x-2'>
+                                {
+                                    projectData.map((project, index) => <Project key={index} {...project} />)
+                                }
+                            </div>
+                        </div>
+
                         {/* education  */}
                         <div>
                             <SectionHeader title='Education' />
@@ -133,19 +185,18 @@ const Resume = () => {
                                 educationData.map((edu, index) => <Education key={index} {...edu} />)
                             }
                         </div>
-                        {/* projects */}
-                        <div>
-                            <SectionHeader title='Projects' />
-                            {
-                                projectData.map((project, index) => <Project key={index} {...project} />)
-                            }
-                        </div>
+
                         {/* certification */}
                         <div>
                             <SectionHeader title='Certification' />
                             <Certification />
                         </div>
                     </div>
+                </div>
+
+                {/* footer  */}
+                <div className='mt-4 text-center text-xs text-gray-500 dark:text-gray-400'>
+                    <p>© {new Date().getFullYear()} Toukir Ahammed Raju. All rights reserved.</p>
                 </div>
             </div>
         </div>
